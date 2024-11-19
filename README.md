@@ -91,7 +91,7 @@ sudo systemctl restart docker
    pip install -e langchain/libs/community
    ```
 5. ```
-   pip install onnx openvino==2024.3.0 openvino-dev==2024.3.0
+   pip install onnx==1.16.0 openvino==2024.3.0 openvino-dev==2024.3.0
    ```
 
 
