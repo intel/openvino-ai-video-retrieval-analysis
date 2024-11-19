@@ -36,13 +36,6 @@ import openvino as ov
 import os
 
 
-
-
-
-
-
-
-
 class OpenVINOMeanClip:
     def __init__(self, model_path: str, device: str = "CPU"):
         self.core = Core()
@@ -52,7 +45,7 @@ class OpenVINOMeanClip:
                 self.compiled_model = self.core.import_model(f.read(), device)        
         else:
             self.model = self.core.read_model(model_path)
-            #self.compiled_model = self.core.compile_model(self.model, device)
+            self.compiled_model = self.core.compile_model(self.model, device)
             
         self.output_blob = self.compiled_model.output(0)
         
