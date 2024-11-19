@@ -1,0 +1,26 @@
+# Path to all videos
+videos: 'C:\Users\LNL\Videos\Source_Video\' #Modify the path
+# Do you want to extract frames of videos (True if not done already, else False)
+generate_frames: True
+# How do you want to generate feature embeddings?
+embeddings:
+  type: 'video' # ['video', 'frame']
+  path: 'video_ingest/embeddings'
+  device: 'GPU' #"GPU", "CPU", "NPU" 
+
+# Path to store metadata files
+meta_output_dir: video_ingest/video_metadata/
+# Chunk duration defines the interval of time that each embedding will occur
+chunk_duration: 10
+# Clip duration defines the length of the interval in which the embeding will occur
+clip_duration: 10
+# e.g. For every <chunk_duration>, you embed the first <clip_duration>'s frames of that interval
+
+vector_db:
+  choice_of_db: 'vdms' # #Supported databases [vdms]
+  host: localhost
+  port: 55555 
+
+meanclip_cfg_path: embedding/meanclip_config/clip_meanAgg.json
+
+
