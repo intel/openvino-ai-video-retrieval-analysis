@@ -97,8 +97,9 @@ sudo systemctl restart docker
 
 ## Part TWO: Run VLC Video RAG (Windows OS)
 ### A. Setup vlc rag lua extension 
-1. copy `video_rag.lua` and `client_Rag` to `C:\Program Files\VideoLAN\VLC\lua\extensions`. 
-2. After installation in a new terminal run 
+1. Install VLC
+2. copy `video_rag.lua` and `client_Rag` to `C:\Program Files\VideoLAN\VLC\lua\extensions`. 
+3. After installation in a new terminal run 
 	```
    python -m pip install pywin32
    ```
@@ -128,20 +129,14 @@ sudo systemctl restart docker
 6. Two ways to use vlc rag extension: <br>
    A. Pass the video folder and retrieve a video clip based on the prompt: <br>
     - Type a prompt and click on "Search" <br>
-	examples: <br>
-	Kayaking near a sail boat <br>
-	Reef Sharks <br>
-	Safari <br>
-	Dog riding in a car <br>
-	Dog going for a walk <br>
-	Dog and Fish
 	
 	
 	
    B. Seek to a different position in playing video based on the prompt <br>
-    - Open gopro00191.mov <br>
+    - Open a video <br>
 	- Hit Pause <br>
-	- search for "Sea Lion"
+   - Enter a prompt that you want to look for and hit the search button <br>
+
 
 # Acknowledgements
 Video embeddings - https://github.com/ttrigui/GenAIExamples/tree/client_inference
