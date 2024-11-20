@@ -71,7 +71,7 @@ sudo systemctl restart docker
 ### D. Set up visual rag repo (Windows OS)
 1. Git clone the repo 
 	```
-	git clone <repo-name>
+	git clone https://github.com/intel/openvino-ai-video-retrieval-analysis.git video_retrieval
 	```
 
 2. create virtual env in the home directory:
