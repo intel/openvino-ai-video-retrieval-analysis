@@ -63,8 +63,8 @@ class MeanCLIP(nn.Module):
         return text_embd, word_embd
 
     def get_visual_output(self, visual_inputs):
-        b = visual_inputs.shape[0]
-        visual_inputs = rearrange(visual_inputs, "b n c h w -> (b n) c h w")
+        b = 1 #visual_inputs.shape[0]
+        #visual_inputs = rearrange(visual_inputs, "b n c h w -> (b n) c h w")
         frame_embd = self.clip.encode_image(visual_inputs).float()
         frame_embd = rearrange(frame_embd, "(b n) d -> b n d", b=b)
         return frame_embd
