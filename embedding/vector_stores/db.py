@@ -21,6 +21,7 @@ from einops import rearrange
 import torch
 import os
 import time
+import cv2
 
 
 
@@ -35,6 +36,22 @@ from openvino.runtime import Core
 import openvino as ov
 import os
 
+
+def transform(image, n_px):
+    """
+    Preprocessing pipeline equivalent to the PyTorch _transform function.
+    
+    Args:
+        image (numpy.ndarray): Input image in BGR format.
+        n_px (int): Target size for resizing and cropping.
+
+    """
+    # 1. Resize with bicubic interpolation
+    image = cv2.resize(image, (n_px, n_px), interpolation=cv2.INTER_CUBIC)
+    
+
+ 
+    return torch.from_numpy(image)
 
 class OpenVINOMeanClip:
     def __init__(self, model_path: str, device: str = "CPU"):
@@ -150,8 +167,8 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
                                                                             )
             
                 
-                #embeddings_tensor = self.model.get_video_embeddings(videos_tensor.unsqueeze(0).to(model_device))
-                input_tensor = videos_tensor.unsqueeze(0).to(model_device)
+                input_tensor = videos_tensor.to(model_device)
+                #input_tensor = videos_tensor.unsqueeze(0).to(model_device)
                 
                 
                 print("Step 1: Converting Pytorch model to onnx")
@@ -161,10 +178,13 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
                 subprocess.call(["mo", '--input_model', "MeanCLIP.onnx"])
                 print("openvino model genertated")
                 model_path = "MeanCLIP.xml"  
-                if "NPU" in self.ov_device:
-                    print("Step 3: Compiling blob for NPU. This is a one time step and will take about 30 min if no blob is present")
-                    output_path = "MeanCLIP.blob"   
-                    compile_and_export_model(ov.Core(),model_path,output_path)                
+        if "NPU" in self.ov_device:
+            if os.path.isfile("MeanCLIP.blob"):
+                pass
+            else:
+                print("Step 3: Compiling blob for NPU. This is a one time step and will take about 30 min if no blob is present")
+                output_path = "MeanCLIP.blob"   
+                compile_and_export_model(ov.Core(),model_path,output_path)                
 
                     #import sys
                     #sys.exit(1)         
@@ -189,11 +209,12 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
                                                                           )
             t1 = time.time()
             print("self.load_video_for_meanclip took ", t1 - t0, " s")
-            input_tensor = videos_tensor.unsqueeze(0).to(model_device)
+            #input_tensor = videos_tensor.unsqueeze(0).to(model_device)
+            input_tensor = videos_tensor.to(model_device)
                    
                
             t0 = time.time()
-            embeddings_tensor = g_meanClip.get_video_embeddings(input_tensor) #########################################################
+            embeddings_tensor = g_meanClip.get_video_embeddings(input_tensor)
    
             t1 = time.time()
             print("<- g_meanClip.get_video_embeddings... ", t1 - t0, " s")
@@ -220,20 +241,17 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
             vpath = vis_path
             print("**time for VideoReader**** = ", t1 - t0, " s")
         vr = vr_global
-        #print("time for VideoReader(", vis_path, ") = ", t1 - t0, " s")
         fps = vr.get_avg_fps()
         #print("FPS",fps)
         num_frames = len(vr)
-        #print("num_frames",num_frames)
-        #print("kwargs", kwargs)
+
         start_idx = int(fps*kwargs.get("start_time", [0])[0])
         #print("start_idx",start_idx)
         end_idx = start_idx+int(fps*kwargs.get("clip_duration", [num_frames])[0])
         #print("end_idx",end_idx)
 
         frame_idx = np.linspace(start_idx, end_idx, num=num_frm, endpoint=False, dtype=int) # Uniform sampling
-        #print("frame_idx",frame_idx)
-        #print("type of frame new", frame_idx.astype(int).tolist())
+
         clip_images = []
 
         # preprocess images
@@ -249,13 +267,13 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
         for idx in range(temp_frms.shape[0]):
             
             im = temp_frms[idx] # H W C
-            clip_images.append(clip_preprocess(toPIL(im.permute(2,0,1)))) # 3, 224, 224  as input to append
+            np_image = transform(np.array(im), max_img_size)
+            clip_images.append(clip_preprocess(toPIL(np_image.permute(2,0,1)))) # 3, 224, 224  as input to append
+            #clip_images.append(clip_preprocess(toPIL(im.permute(2,0,1)))) 
         t1 = time.time()
         print("time for preproc = ", t1 - t0, " s")
         clip_images_tensor = torch.zeros((num_frm,) + clip_images[0].shape)
         clip_images_tensor[:num_frm] = torch.stack(clip_images)
-        #t1 = time.time() 
-        #print("time for preproc = ", t1 - t0, " s")
         return clip_images_tensor
 
 

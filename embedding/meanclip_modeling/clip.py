@@ -88,6 +88,17 @@ def _transform(n_px):
         Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),
     ])
 
+def _transform_preproc(n_px):
+    
+    return Compose([
+ 
+        CenterCrop(n_px),
+        _convert_image_to_rgb,
+        ToTensor(),
+        Normalize((0.48145466, 0.4578275, 0.40821073), (0.26862954, 0.26130258, 0.27577711)),        
+     
+])
+
 
 def available_models() -> List[str]:
     """Returns the names of available CLIP models"""

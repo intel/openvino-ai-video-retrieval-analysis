@@ -3,7 +3,7 @@
 
 from PIL import Image
 from torchvision import transforms
-from embedding.meanclip_modeling.clip import _transform, _convert_image_to_rgb
+from embedding.meanclip_modeling.clip import _transform, _convert_image_to_rgb,_transform_preproc
 
 try:
     from torchvision.transforms import InterpolationMode
@@ -15,6 +15,8 @@ except ImportError:
 def get_transforms(model_name, image_size=None):
     if model_name == "clip":
         return _transform(image_size)
+    elif model_name == "clip_preproc":
+        return _transform_preproc(image_size) 
 
     elif model_name.startswith("mobilenet"):
         preprocess = transforms.Compose([
