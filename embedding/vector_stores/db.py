@@ -255,7 +255,7 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
         clip_images = []
 
         # preprocess images
-        clip_preprocess = get_transforms("clip", max_img_size)
+        clip_preprocess = get_transforms("clip_preproc", max_img_size)
         
         
         t0 = time.time()
