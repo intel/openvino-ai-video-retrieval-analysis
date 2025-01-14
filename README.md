@@ -1,7 +1,8 @@
-# VLC Video RAG
-Extension in lua for VLC RAG 
+# Video RAG 
+ - Video Retrieval Extension for VLC
+ - Video Retrieval feature for Shotcut(coming soon)
 
-There are two parts to setting up this demo. First is the setup of docker and python on Windows Subsystem for Linux. The second part is the setup of the VLC extension on Windows.
+There are two parts to setting up this project. First is the setup of docker and python on Windows Subsystem for Linux. The second part is the setup of the Video Rag extension for VLC/Shotcut on Windows.
 
 ## PART ONE: Visual RAG Setup on Window Subsystem for Linux (WSL)
 In this part, you will setup WSL, install docker, and run VDMS in docker container.
@@ -95,22 +96,15 @@ sudo systemctl restart docker
    ```
 
 
-## Part TWO: Run VLC Video RAG (Windows OS)
-### A. Setup vlc rag lua extension 
-1. Install VLC
-2. copy `video_rag.lua` and `client_Rag` to `C:\Program Files\VideoLAN\VLC\lua\extensions`. 
-3. After installation in a new terminal run 
-	```
-   python -m pip install pywin32
-   ```
+## Part TWO: Video RAG Server Setup (Windows OS)
 
-### B. Start video RAG 
+### A. Start video RAG 
 1. Go to the command window where you have rag_env activated <br>
 	`cd video_retrieval`
 	
 2. Update videos path in docs/config.yaml to point to the folder where you have the videos to perform Rag on. 
 
-3. Start VLC Video Rag server. 
+3. Start Video Rag server. 
    - For the very first time we will need to generate and store embeddings of the videos in VDMS. Use "-g generate" flag. This step will take few minutes depending on the number of videos. Also, if it doesn't find the OpenVINO clip IRs then wait for it to convert from pytorch to onnx to openvino. Currently NPU compilation takes 29 min (This is a one time step) <br>
 
     ```
@@ -120,7 +114,13 @@ sudo systemctl restart docker
     ```
     python VLC_video-retrieval-ui.py -c docs/config.yaml
     ```
-
+### B. Setup vlc rag lua extension 
+1. Install VLC
+2. copy `video_rag.lua` and `client_Rag` to `C:\Program Files\VideoLAN\VLC\lua\extensions`. 
+3. After installation in a new terminal run 
+	```
+   python -m pip install pywin32
+   ```
 	
 4. Open VLC
 
@@ -137,6 +137,7 @@ sudo systemctl restart docker
 	- Hit Pause <br>
    - Enter a prompt that you want to look for and hit the search button <br>
 
+### C. Setup video rag feature in shotcut (coming soon)
 
 # Acknowledgements
 Video embeddings - https://github.com/ttrigui/GenAIExamples/tree/client_inference
