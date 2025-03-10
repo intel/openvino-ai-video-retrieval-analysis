@@ -144,14 +144,15 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
 
     def embed_video(self, paths: List[str], **kwargs: Any) -> List[List[float]]:
         global g_meanClip
+        import subprocess
+        from compile_model_npu import compile_and_export_model
         
 
 
         if os.path.isfile("MeanCLIP.xml"):
             pass
         else:
-            import subprocess
-            from compile_model_npu import compile_and_export_model
+
             print("MeanClip OV model doesn't exist, converting now. Please wait this step will take some time as NPU compilation takes time.")
             for vid_path in sorted(paths):
           
@@ -182,6 +183,7 @@ class MeanCLIPEmbeddings(BaseModel, Embeddings):
             if os.path.isfile("MeanCLIP.blob"):
                 pass
             else:
+                model_path = "MeanCLIP.xml" 
                 print("Step 3: Compiling blob for NPU. This is a one time step and will take about 30 min if no blob is present")
                 output_path = "MeanCLIP.blob"   
                 compile_and_export_model(ov.Core(),model_path,output_path)                
