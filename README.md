@@ -88,8 +88,8 @@ sudo systemctl restart docker
    ```
 4. Install landchain-ai
    ```
-   git clone https://github.com/langchain-ai/langchain
-   pip install -e langchain/libs/community
+   git clone https://github.com/langchain-ai/langchain-community.git
+   pip install -e langchain-community/libs/community
    ```
 5. ```
    pip install onnx==1.16.0 openvino==2024.3.0 openvino-dev==2024.3.0
